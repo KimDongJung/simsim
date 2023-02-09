@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開発用自動フォーム入力</title>
+</head>
+<body>
+  <form class="" action="">
+    <p>名前:: <input name="uname" type="text"></p>
+    <p>年齢:: <input name="uage" type="text"></p>
+    <p>性別:: <input name="ugender" type="radio" value="男性"><label>男性</label> <input name="ugender" type="radio" value="女性"><label>女性</label></p>
+    <p>趣味:: <input name="uhabit" type="checkbox" value="読書"><label>読書</label> <input name="uhabit" type="checkbox" value="ゲーム"><label>ゲーム</label> <input name="uhabit" type="checkbox" value="運動"><label>運動</label></p>
+    <p>
+      お住まい::
+      <select name="uplace">
+        <option value="">選択してください</option>
+        <option value="東京">東京</option>
+        <option value="北海道">北海道</option>
+        <option value="沖縄">沖縄</option>
+      </select>
+    </p>
+  </form>
+
+  <!-- script -->
+  <script src="./form-auto-complete-for-dev.js"></script>
+  <!-- //script -->
+</body>
+</html>
