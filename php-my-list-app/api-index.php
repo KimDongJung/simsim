@@ -15,7 +15,7 @@ $user_password = '';
 try {
   $connect = new PDO("mysql:host=${server_name};dbname=${db_name}", $user_name, $user_password);
   $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  // echo 'Connected successfully';
+  echo 'Connected successfully';
 
   $statement = $connect->prepare('INSERT INTO php_my_list_app (message) VALUES (:message)');
   $statement->bindParam(':message', $message);
@@ -23,7 +23,7 @@ try {
   $message = $data->message;
   $statement->execute();
 
-  // echo "New records created successfully";
+  echo "New records created successfully";
 }
 catch (PDOException $error) {
   echo 'Connection failed: ' . $error->getMessage();
