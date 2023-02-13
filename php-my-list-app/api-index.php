@@ -1,12 +1,10 @@
 <?php
-header("Content-Type: application/json; charset=utf-8");
-
 // Takes raw data from the request
 $json = file_get_contents('php://input');
 
 // Converts it into a PHP object
 $data = json_decode($json);
-
+$is_init_content = (!empty($data->type) && $data->type === 'init');
 $server_name = 'localhost';
 $db_name = 'simsim';
 $user_name = 'root';
@@ -15,15 +13,22 @@ $user_password = '';
 try {
   $connect = new PDO("mysql:host=${server_name};dbname=${db_name}", $user_name, $user_password);
   $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  echo 'Connected successfully';
 
-  $statement = $connect->prepare('INSERT INTO php_my_list_app (message) VALUES (:message)');
-  $statement->bindParam(':message', $message);
+  if ($is_init_content) {
+    $statement = $connect->prepare("SELECT * FROM php_my_list_app");
 
-  $message = $data->message;
-  $statement->execute();
+    $statement->execute();
 
-  echo "New records created successfully";
+    $result = $statement->setFetchMode(PDO::FETCH_ASSOC);
+    $result = $statement->fetchAll();
+  }
+
+  // $statement = $connect->prepare('INSERT INTO php_my_list_app (message) VALUES (:message)');
+  // $statement->bindParam(':message', $message);
+
+  // $message = $data->message;
+  // $statement->execute();
+
 }
 catch (PDOException $error) {
   echo 'Connection failed: ' . $error->getMessage();
@@ -40,6 +45,6 @@ catch (PDOException $error) {
 // }
 
 
-
+header("Content-Type: application/json; charset=utf-8");
 // echo json_encode($person, JSON_UNESCAPED_UNICODE);
-echo json_encode($data, JSON_UNESCAPED_UNICODE);
+echo json_encode($result, JSON_UNESCAPED_UNICODE);
