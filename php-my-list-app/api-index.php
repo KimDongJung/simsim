@@ -5,6 +5,7 @@ $json = file_get_contents('php://input');
 // Converts it into a PHP object
 $data = json_decode($json);
 $is_init_content = (!empty($data->type) && $data->type === 'init');
+$is_delete_content = (!empty($data->type) && $data->type === 'delete');
 $server_name = 'localhost';
 $db_name = 'simsim';
 $user_name = 'root';
@@ -21,6 +22,10 @@ try {
 
     $result = $statement->setFetchMode(PDO::FETCH_ASSOC);
     $result = $statement->fetchAll();
+  }
+
+  if ($is_init_content) {
+    
   }
 
   // $statement = $connect->prepare('INSERT INTO php_my_list_app (message) VALUES (:message)');

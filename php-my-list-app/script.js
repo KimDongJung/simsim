@@ -4,6 +4,32 @@ init_content();
 content();
 // test();
 
+function init_content () {
+  const content_list_element = document.querySelector('.content-list');
+  request_content('http://localhost/php-my-list-app/api-index.php', {type: 'init'})
+  .then((data) => {
+    console.log(data);
+    data.forEach((content_obj) => {
+      const content_text = content_obj.message;
+      const new_checkbox_element = document.createElement('input');
+      const new_text_node = document.createTextNode(`::${content_text} `);
+      const new_delete_button_element = document.createElement('button');
+      const new_content_element = document.createElement('li');
+
+      new_checkbox_element.type = "checkbox";
+      new_checkbox_element.className = "content-item-check";
+      new_delete_button_element.type = 'button';
+      new_delete_button_element.className = 'content-delete-btn';
+      new_delete_button_element.textContent = 'DELETE';
+      new_content_element.className = 'content-item';
+      new_content_element.appendChild(new_checkbox_element);
+      new_content_element.appendChild(new_text_node);
+      new_content_element.appendChild(new_delete_button_element);
+      content_list_element.appendChild(new_content_element);
+    });
+  });
+}
+
 function content () {
   const content_section = document.querySelector('.content');
   const content_text_input_element = content_section.querySelector('.content-add-txt');
@@ -19,8 +45,12 @@ function content () {
     
     if (is_content_add_button) content_add_event_handler(event);
     if (is_contnet_delete_button) {
-      const delete_target_element = clicked_element.closest('.content-item');
-      delete_target_element.remove();
+      // const delete_target_element = clicked_element.closest('.content-item');
+      // delete_target_element.remove();
+      request_content('http://localhost/php-my-list-app/api-index.php', {type: 'delete'})
+      .then(data => {
+        
+      });
     }
     if (is_chekced_contnet_delete_button) {
       const content_checkbox_elements = this.querySelectorAll('.content-item-check');
@@ -129,36 +159,7 @@ function content () {
 }
 
 
-function init_content () {
-  const content_list_element = document.querySelector('.content-list');
-  request_content('http://localhost/php-my-list-app/api-index.php', {type: 'init'})
-  .then((data) => {
-    console.log(data);
 
-    data.forEach((content_obj) => {
-      const content_text = content_obj.message;
-      const new_checkbox_element = document.createElement('input');
-      const new_text_node = document.createTextNode(`::${content_text} `);
-      const new_delete_button_element = document.createElement('button');
-      const new_content_element = document.createElement('li');
-
-      new_checkbox_element.type = "checkbox";
-      new_checkbox_element.className = "content-item-check";
-      new_delete_button_element.type = 'button';
-      new_delete_button_element.className = 'content-delete-btn';
-      new_delete_button_element.textContent = 'DELETE';
-      new_content_element.className = 'content-item';
-      new_content_element.appendChild(new_checkbox_element);
-      new_content_element.appendChild(new_text_node);
-      new_content_element.appendChild(new_delete_button_element);
-      content_list_element.appendChild(new_content_element);
-    });
-  });
-
-  
-  
-
-}
 
 async function request_content(url = '', data = {}) {
   const response = await fetch(url, {
