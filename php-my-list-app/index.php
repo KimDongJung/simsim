@@ -32,9 +32,7 @@
 </head>
 <body>
   <section class="content">
-    <ul class="content-list">
-      <li class="content-item"><input class="content-item-check" type="checkbox">::Default Content <button class="content-delete-btn" type="button">DELETE</li>
-    </ul>
+    <ul class="content-list"></ul>
     <hr>
     <input class="content-add-txt" type="text"> <button class="content-add-btn" type="button">ADD CONTENT</button> <button class="chekced-content-delete-btn" type="button">SELECTED DELETE</button>
     <p class="err-msg">Error:: <span class="err-msg-txt"></span></p>
