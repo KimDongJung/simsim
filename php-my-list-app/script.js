@@ -2,7 +2,6 @@
 
 init_content();
 content();
-// test();
 
 function init_content () {
   const content_list_element = document.querySelector('.content-list');
@@ -10,9 +9,10 @@ function init_content () {
   .then((data) => {
     console.log(data);
     data.forEach((content_obj) => {
+      const content_id = content_obj.id;
       const content_text = content_obj.message;
       const new_checkbox_element = document.createElement('input');
-      const new_text_node = document.createTextNode(`::${content_text} `);
+      const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
       const new_delete_button_element = document.createElement('button');
       const new_content_element = document.createElement('li');
 
@@ -25,6 +25,7 @@ function init_content () {
       new_content_element.appendChild(new_checkbox_element);
       new_content_element.appendChild(new_text_node);
       new_content_element.appendChild(new_delete_button_element);
+      new_content_element.setAttribute('data-id', content_id);
       content_list_element.appendChild(new_content_element);
     });
   });
@@ -33,23 +34,47 @@ function init_content () {
 function content () {
   const content_section = document.querySelector('.content');
   const content_text_input_element = content_section.querySelector('.content-add-txt');
+  const content_list_element = content_section.querySelector('.content-list');
   const content_section_event_handler = function (event) {
     let error_message = "";
     const error_message_text_element = document.querySelector('.err-msg-txt');
     const clicked_element = event.target;
     const is_content_add_button = clicked_element.classList.contains("content-add-btn");
-    const is_contnet_delete_button = clicked_element.classList.contains("content-delete-btn");
+    const is_content_delete_button = clicked_element.classList.contains("content-delete-btn");
     const is_chekced_contnet_delete_button = clicked_element.classList.contains("chekced-content-delete-btn");
     
-    // if (!(is_content_add_button || is_contnet_delete_button)) return; // クリックイベント処理をかけたいエレメントが増えれば増える程一々追加するのは厳しいかも・・・
+    // if (!(is_content_add_button || is_content_delete_button)) return; // クリックイベント処理をかけたいエレメントが増えれば増える程一々追加するのは厳しいかも・・・
     
     if (is_content_add_button) content_add_event_handler(event);
-    if (is_contnet_delete_button) {
-      // const delete_target_element = clicked_element.closest('.content-item');
-      // delete_target_element.remove();
-      request_content('http://localhost/php-my-list-app/api-index.php', {type: 'delete'})
+    if (is_content_delete_button) {
+      const delete_target_id = clicked_element.closest('.content-item').getAttribute('data-id');
+      console.log(delete_target_id);
+      request_content('http://localhost/php-my-list-app/api-index.php', {type: 'delete', target_id: delete_target_id})
       .then(data => {
-        
+        // DRY...
+        content_text_input_element.value = '';
+        error_message_text_element.textContent = '';
+        content_list_element.innerHTML = '';
+        data.forEach((content_obj) => {
+          const content_id = content_obj.id;
+          const content_text = content_obj.message;
+          const new_checkbox_element = document.createElement('input');
+          const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
+          const new_delete_button_element = document.createElement('button');
+          const new_content_element = document.createElement('li');
+
+          new_checkbox_element.type = "checkbox";
+          new_checkbox_element.className = "content-item-check";
+          new_delete_button_element.type = 'button';
+          new_delete_button_element.className = 'content-delete-btn';
+          new_delete_button_element.textContent = 'DELETE';
+          new_content_element.className = 'content-item';
+          new_content_element.appendChild(new_checkbox_element);
+          new_content_element.appendChild(new_text_node);
+          new_content_element.appendChild(new_delete_button_element);
+          new_content_element.setAttribute('data-id', content_id);
+          content_list_element.appendChild(new_content_element);
+        });
       });
     }
     if (is_chekced_contnet_delete_button) {
@@ -109,57 +134,53 @@ function content () {
       return;
     }
 
-    new_checkbox_element.type = "checkbox";
-    new_checkbox_element.className = "content-item-check";
-    new_delete_button_element.type = 'button';
-    new_delete_button_element.className = 'content-delete-btn';
-    new_delete_button_element.textContent = 'DELETE';
-    new_content_element.className = 'content-item';
-    new_content_element.appendChild(new_checkbox_element);
-    new_content_element.appendChild(new_text_node);
-    new_content_element.appendChild(new_delete_button_element);
-    content_list_element.appendChild(new_content_element);
-    content_text_input_element.value = '';
-    error_message_text_element.textContent = '';
+    /*
+      非同期通信が含まれてないコード
+      new_checkbox_element.type = "checkbox";
+      new_checkbox_element.className = "content-item-check";
+      new_delete_button_element.type = 'button';
+      new_delete_button_element.className = 'content-delete-btn';
+      new_delete_button_element.textContent = 'DELETE';
+      new_content_element.className = 'content-item';
+      new_content_element.appendChild(new_checkbox_element);
+      new_content_element.appendChild(new_text_node);
+      new_content_element.appendChild(new_delete_button_element);
+      content_list_element.appendChild(new_content_element);
+      content_text_input_element.value = '';
+      error_message_text_element.textContent = '';
+    */
 
-    /////////////////////
-    // TEST
-    /////////////////////
-    async function postData(url = '', data = {}) {
-      // Default options are marked with *
-      const response = await fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
+      request_content('http://localhost/php-my-list-app/api-index.php', {type: 'add', message: content_text})
+      .then(data => {
+        content_text_input_element.value = '';
+        error_message_text_element.textContent = '';
+        content_list_element.innerHTML = '';
+        data.forEach((content_obj) => {
+          const content_id = content_obj.id;
+          const content_text = content_obj.message;
+          const new_checkbox_element = document.createElement('input');
+          const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
+          const new_delete_button_element = document.createElement('button');
+          const new_content_element = document.createElement('li');
+
+          new_checkbox_element.type = "checkbox";
+          new_checkbox_element.className = "content-item-check";
+          new_delete_button_element.type = 'button';
+          new_delete_button_element.className = 'content-delete-btn';
+          new_delete_button_element.textContent = 'DELETE';
+          new_content_element.className = 'content-item';
+          new_content_element.appendChild(new_checkbox_element);
+          new_content_element.appendChild(new_text_node);
+          new_content_element.appendChild(new_delete_button_element);
+          new_content_element.setAttribute('data-id', content_id);
+          content_list_element.appendChild(new_content_element);
+        });
       });
-      return response.json(); // parses JSON response into native JavaScript objects
-    }
-  
-    postData('http://localhost/php-my-list-app/api-index.php', { message: content_text })
-    .then((data) => {
-      console.log(data); // JSON data parsed by `data.json()` call
-    });
-
-    
-
-    
-    
   };
 
   content_section.addEventListener('click', content_section_event_handler);
   content_text_input_element.addEventListener('keypress', content_add_event_handler);
 }
-
-
-
 
 async function request_content(url = '', data = {}) {
   const response = await fetch(url, {
@@ -175,32 +196,5 @@ async function request_content(url = '', data = {}) {
     body: JSON.stringify(data)
   });
   return response.json();
-}
-
-function test () {
-  const content_value = document.querySelector('.content-add-txt').value;
-  // Example POST method implementation:
-  async function postData(url = '', data = {}) {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
-
-  postData('http://localhost/php-my-list-app/api-index.php', { name: 'KIM', age: 32, nation: 'KOREA', added: '何かないのか！？', mm: "成功したぜ！！！" })
-  .then((data) => {
-    console.log(data); // JSON data parsed by `data.json()` call
-  });
 }
 
