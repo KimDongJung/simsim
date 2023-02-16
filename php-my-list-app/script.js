@@ -3,31 +3,33 @@
 init_content();
 content();
 
+function create_content (content_obj = {}, type = '') {
+  const content_list_element = document.querySelector('.content-list');
+  const content_id = content_obj.id;
+  const content_text = content_obj.message;
+  const new_checkbox_element = document.createElement('input');
+  const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
+  const new_delete_button_element = document.createElement('button');
+  const new_content_element = document.createElement('li');
+
+  new_checkbox_element.type = "checkbox";
+  new_checkbox_element.className = "content-item-check";
+  new_delete_button_element.type = 'button';
+  new_delete_button_element.className = 'content-delete-btn';
+  new_delete_button_element.textContent = 'DELETE';
+  new_content_element.className = 'content-item';
+  new_content_element.appendChild(new_checkbox_element);
+  new_content_element.appendChild(new_text_node);
+  new_content_element.appendChild(new_delete_button_element);
+  new_content_element.setAttribute('data-id', content_id);
+  content_list_element.appendChild(new_content_element);
+}
+
 function init_content () {
   const content_list_element = document.querySelector('.content-list');
   request_content('http://localhost/php-my-list-app/api-index.php', {type: 'init'})
-  .then((data) => {
-    console.log(data);
-    data.forEach((content_obj) => {
-      const content_id = content_obj.id;
-      const content_text = content_obj.message;
-      const new_checkbox_element = document.createElement('input');
-      const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
-      const new_delete_button_element = document.createElement('button');
-      const new_content_element = document.createElement('li');
-
-      new_checkbox_element.type = "checkbox";
-      new_checkbox_element.className = "content-item-check";
-      new_delete_button_element.type = 'button';
-      new_delete_button_element.className = 'content-delete-btn';
-      new_delete_button_element.textContent = 'DELETE';
-      new_content_element.className = 'content-item';
-      new_content_element.appendChild(new_checkbox_element);
-      new_content_element.appendChild(new_text_node);
-      new_content_element.appendChild(new_delete_button_element);
-      new_content_element.setAttribute('data-id', content_id);
-      content_list_element.appendChild(new_content_element);
-    });
+  .then(data => {
+    data.forEach(content_obj => create_content(content_obj, 'init'));
   });
 }
 
@@ -51,30 +53,10 @@ function content () {
       console.log(delete_target_id);
       request_content('http://localhost/php-my-list-app/api-index.php', {type: 'delete', target_id: delete_target_id})
       .then(data => {
-        // DRY...
         content_text_input_element.value = '';
         error_message_text_element.textContent = '';
         content_list_element.innerHTML = '';
-        data.forEach((content_obj) => {
-          const content_id = content_obj.id;
-          const content_text = content_obj.message;
-          const new_checkbox_element = document.createElement('input');
-          const new_text_node = document.createTextNode(`No.${content_id}::${content_text} `);
-          const new_delete_button_element = document.createElement('button');
-          const new_content_element = document.createElement('li');
-
-          new_checkbox_element.type = "checkbox";
-          new_checkbox_element.className = "content-item-check";
-          new_delete_button_element.type = 'button';
-          new_delete_button_element.className = 'content-delete-btn';
-          new_delete_button_element.textContent = 'DELETE';
-          new_content_element.className = 'content-item';
-          new_content_element.appendChild(new_checkbox_element);
-          new_content_element.appendChild(new_text_node);
-          new_content_element.appendChild(new_delete_button_element);
-          new_content_element.setAttribute('data-id', content_id);
-          content_list_element.appendChild(new_content_element);
-        });
+        data.forEach((content_obj) => create_content(content_obj, 'init'));
       });
     }
     if (is_chekced_contnet_delete_button) {
