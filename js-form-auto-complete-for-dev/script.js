@@ -1,10 +1,10 @@
 'use strict';
 window.addEventListener('load', function () {
-  const auto_complete = new FormAutoCompleteForDev();
-  auto_complete.setInputObj({
+  const auto_complete = new FormAutoCompleteForDev({
     text: {
       uname: "金",
       uage: "31",
+      umsg: 'test',
     },
     checked: {
       ugender: '女性',
@@ -15,5 +15,4 @@ window.addEventListener('load', function () {
       uplace: '沖縄',
     },
   });
-  auto_complete.excute();
 });
