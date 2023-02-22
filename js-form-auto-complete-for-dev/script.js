@@ -4,12 +4,11 @@ window.addEventListener('load', function () {
     text: {
       uname: "金",
       uage: "31",
-      umsg: 'test',
+      umsg: 'test\nadada',
     },
     checked: {
       ugender: '女性',
-      uhabit: 'ゲーム',
-      uhabit: '運動',
+      uhabit: ['読書', '運動'],
     },
     selected: {
       uplace: '沖縄',

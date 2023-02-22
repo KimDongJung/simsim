@@ -14,18 +14,35 @@ class FormAutoCompleteForDev {
     this.autoCompleteButton.addEventListener('click', function () {
       for (const type in inputs) {
         for (const input_name in inputs[type]) {
-          let target_element; 
+          let target_element;
+          let target_elements;
+          const input_value = inputs[type][input_name];
   
           switch (type) {
             case 'text':
-              target_element = document.querySelector(`input[name=${input_name}]`);
-              let target_element_tag_name = target_element.tagName;
-              console.log(target_element_tag_name);
+              target_element = document.querySelector(`[name=${input_name}]`)
               target_element.value = inputs[type][input_name];
               break;
             case 'checked':
-              target_element = document.querySelector(`input[name="${input_name}"][value="${inputs[type][input_name]}"]`);
-              target_element.checked = true;
+              const target_element_is_array = Array.isArray(inputs[type][input_name]);
+              if (target_element_is_array) {
+                target_elements = document.querySelectorAll(`input[name=${input_name}]`);
+              }
+              else {
+                target_element = document.querySelector(`input[name=${input_name}][value="${input_value}"]`);
+              }
+              
+              if (target_element_is_array) {
+                target_elements.forEach(target_element => {
+                  inputs[type][input_name].forEach(current_value => {
+                    const same_target_element_value_and_current_value = target_element.value === current_value;
+                    if (same_target_element_value_and_current_value) target_element.checked = true;
+                  })
+                });
+              }
+              else {
+                target_element.checked = true;
+              }
               break;
             case 'selected':
               target_element = document.querySelector(`select[name=${input_name}]`);
