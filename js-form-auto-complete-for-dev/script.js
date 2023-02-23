@@ -8,7 +8,7 @@ window.addEventListener('load', function () {
     },
     checked: {
       ugender: '女性',
-      uhabit: ['読書', '運動'],
+      uhabit: ['読書', 'ゲーム', '運動'],
     },
     selected: {
       uplace: '沖縄',
