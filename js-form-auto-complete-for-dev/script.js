@@ -4,7 +4,7 @@ window.addEventListener('load', function () {
     text: {
       uname: "金",
       uage: "31",
-      umsg: 'test\nadada',
+      umsg: 'test\ntest\ntest',
     },
     checked: {
       ugender: '女性',
