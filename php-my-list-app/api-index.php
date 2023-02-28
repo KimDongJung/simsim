@@ -64,18 +64,6 @@ catch (PDOException $error) {
   echo 'Connection failed: ' . $error->getMessage();
 }
 
-
-// $person = [];
-// $is_post_request = $_SERVER['REQUEST_METHOD'] == 'POST' ? true : false;
-
-// if ($is_post_request) {
-//   foreach ($_POST as $post_key => $post_value) {
-//     $person[$post_key] = $post_value;
-//   }
-// }
-
-
-
 header("Content-Type: application/json; charset=utf-8");
 // echo json_encode($person, JSON_UNESCAPED_UNICODE);
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
