@@ -50,7 +50,7 @@ class FormAutoCompleteForDev {
               const target_element_children_elements = target_element.options; // ② 方法
               /**
                * HTMLCollectionであるtarget_element_children_elementsはforEachメソッドは使えない
-               * だが、ArrayライクObjectなので
+               * だけど、ArrayライクObjectなので
                *  Array.prototype.forEach.call(target_element_children_elements, function ..) か
                *  for (const value of target_element_children_elements) ...
                * という形で使用できる
