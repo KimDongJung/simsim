@@ -1,16 +1,13 @@
 <?php
 class MyUri {
-  // public $requestUri = $_SERVER['REQUEST_URI']; 
-  // public $requestUri = $_SERVER['REQUEST_URI']; 
-  // const requestUri = $_SERVER['REQUEST_URI'];
-  
-  public function __construct(string $test_domain) {
-    // $this->requestUri = empty($test_domain) ? $_SERVER['REQUEST_URI'] : $test_domain;
-  }
-  public static function getPureRequestUri () {
-    return explode('?', $this->requestUri)[0];
+  public static function getPureRequestUri (string $test_uri = '') {
+    $request_uri = empty($_SERVER['REQUEST_URI']) ? empty($test_uri) ? null : $test_uri : $_SERVER['REQUEST_URI'];
+    $request_uri_has_value = $request_uri !== null;
+    
+    if ($request_uri_has_value) {
+      $request_uri = explode('?', $request_uri)[0];
+    }
+
+    return $request_uri;
   }
 }
-?>
-
-<?php echo MyUri::getPureRequestUri()?>
