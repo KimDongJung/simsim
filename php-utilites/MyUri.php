@@ -10,4 +10,17 @@ class MyUri {
 
     return $request_uri;
   }
+  
+  public static function getGetData (array $test_get = []) {
+    $get = empty($_GET) ? empty($test_get) ? null : $test_get : $_GET;
+    $get_has_value = $get !== null;
+
+    if ($get_has_value) {
+      foreach ($get as $get_key => $get_value) {
+        $get[$get_key] = htmlspecialchars($get_value, ENT_QUOTES, 'UTF-8');
+      }
+    }
+    
+    return $get;
+  }
 }
